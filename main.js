@@ -1,4 +1,5 @@
 const { Actor } = require('apify');
+const puppeteer = require('puppeteer');
 
 Actor.main(async () => {
     const input = await Actor.getInput();
@@ -9,7 +10,7 @@ Actor.main(async () => {
 
     const sellerIds = new Set();
 
-    const browser = await Actor.launchPuppeteer();
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(categoryUrl, { waitUntil: 'domcontentloaded' });
 
@@ -17,7 +18,6 @@ Actor.main(async () => {
         links.map(link => link.href)
     );
 
-    // Limit to first N products
     productLinks = productLinks.slice(0, maxProducts);
 
     for (const url of productLinks) {
